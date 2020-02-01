@@ -58,3 +58,4 @@ The service introduces REST calls for simple authentication (register/ login).
 * I put the secret key file (secretKey.txt) in the project for easy access.
 * I used jbcrypt 3rd party library to hash the password (with salt).
 * I used jjwt 3rd party library to generate and decode Authorization token.
+* I enclosed the MYSql file (db_users_user.sql) in: src/main/resources/db_users_user.sql

@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Accessors(chain = true)
@@ -18,6 +18,6 @@ public class User {
     @Email
     private String email;
 
-    @NotNull
+    @NotBlank
     private String password;
 }

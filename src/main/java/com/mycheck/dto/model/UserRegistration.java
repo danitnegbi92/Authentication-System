@@ -11,7 +11,6 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class UserRegistration {
     @Email
-    @NotBlank
     private String email;
 
     @NotBlank

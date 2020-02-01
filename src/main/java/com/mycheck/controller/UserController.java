@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import static com.mycheck.constants.ErrorsConstants.*;
@@ -27,7 +26,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody @Valid UserRegistration userRegistration){
+    public ResponseEntity<String> register(@RequestBody @Valid UserRegistration userRegistration){
         LOG.info("POST request to register new user");
         if(userService.registerUser(userRegistration)){
             return new ResponseEntity<>(HttpStatus.OK);
@@ -36,24 +35,25 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid UserRegistration userRegistration, HttpServletResponse response){
+    public ResponseEntity<String> login(@RequestBody @Valid UserRegistration userRegistration){
         LOG.info("POST request to user login");
         String token = userService.login(userRegistration);
         if(StringUtils.isEmpty(token))
             return new ResponseEntity<>(LOGIN_FAILED.getMessage(), HttpStatus.UNAUTHORIZED);
 
         LOG.info("Login successfully - generate Authorization response header");
-        response.addHeader(HttpHeaders.AUTHORIZATION,  token);
-        return new ResponseEntity<>(HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION,  token);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @GetMapping("/data")
-    public ResponseEntity<?> login(HttpServletRequest request, String token1){ //todo delete token1
+    public ResponseEntity<String> login(HttpServletRequest request){
         LOG.info("GET request to get email by Authorization request header");
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
-        String email = userService.getEmail(token1);
+        String email = userService.getEmail(token);
         if(StringUtils.isEmpty(email))
-            return new ResponseEntity<>(AUTHORIZATION_FAILED.getMessage(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(AUTHENTICATION_FAILED.getMessage(), HttpStatus.UNAUTHORIZED);
 
         return new ResponseEntity<>(email, HttpStatus.OK);
     }

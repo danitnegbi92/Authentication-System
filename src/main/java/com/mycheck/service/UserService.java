@@ -60,16 +60,12 @@ public class UserService {
         return token;
     }
 
-    private boolean isEmailExist(String email) {
-        return userRepository.existsById(email);
-    }
-
     public String getEmail(String token) {
         Claims claims = null;
         try {
             claims = JwtService.decodeJWT(token);
-        } catch (SignatureException e) {
-            LOG.error("Authentication failed");
+        } catch (MalformedJwtException | SignatureException e) {
+            LOG.error(AUTHENTICATION_FAILED.getMessage() + " - could not decode jwt");
         }
         return claims!=null ? claims.getSubject() : null;
     }

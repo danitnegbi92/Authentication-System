@@ -35,7 +35,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('dan@gmail.com','$2a$06$hvow16JY6hP0RM465cgOkOLZKZ08nvOz0ybkLLsJYJpfozbr/0oc2');
+INSERT INTO `user` VALUES ('dan@gmail.co','$2a$06$P1Cw.V1HuABSdx.dIJdkSOBbR1xn9/S2vdI6jNvYYhv2IZmQ4bSlu'),('dan@gmail.com','$2a$06$hvow16JY6hP0RM465cgOkOLZKZ08nvOz0ybkLLsJYJpfozbr/0oc2'),('danit@gmail.com','$2a$06$iuuc9ZIz41YOlIcamfZm8eKpLFN9nK8MIqh.C2NEIBCba2u5zQxom');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -48,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-02-01 21:45:13
+-- Dump completed on 2020-02-01 23:01:16
