@@ -25,7 +25,7 @@ The service introduces REST calls for simple authentication (register/ login).
 
     In terminal:
 
-        $ cd {YOUR_PROJECT_PATH}/Authentication System 
+        $ cd {YOUR_PROJECT_PATH}/authentication-system/
 
         $ mvn spring-boot:run
 
