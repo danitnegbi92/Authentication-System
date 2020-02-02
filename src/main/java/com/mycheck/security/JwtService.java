@@ -1,8 +1,7 @@
 package com.mycheck.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.mycheck.utils.DateUtils;
+import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -12,10 +11,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 
 public class JwtService {
     private static Logger LOG = LoggerFactory.getLogger(JwtService.class);
@@ -23,12 +22,7 @@ public class JwtService {
     public static String createJWT(String subject, int numOfDaysForExpiration) {
         LOG.info("Starting create JWT");
 
-        long nowMillis = System.currentTimeMillis();
-        Date now = new Date(nowMillis);
-        Calendar c = Calendar.getInstance();
-        c.setTime(now);
-        c.add(Calendar.DAY_OF_MONTH, numOfDaysForExpiration);
-
+        Date now = new Date(System.currentTimeMillis());
         String secretKey = getSecretKeyFromFile();
 
         if(StringUtils.isEmpty(secretKey)) {
@@ -39,7 +33,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(subject)
                 .setIssuedAt(now)
-                .setExpiration(c.getTime())
+                .setExpiration(DateUtils.getDateAfterSelectedDays(now, numOfDaysForExpiration))
                 .signWith(SignatureAlgorithm.HS512, getSecretKeyFromFile())
                 .compact();
     }
@@ -58,7 +52,7 @@ public class JwtService {
         return data;
     }
 
-    public static Claims decodeJWT(String jwt) {
+    private static Claims decodeJWT(String jwt) {
         LOG.info("Starting decode JWT");
 
         if (!isValidJwt(jwt)) {
@@ -72,6 +66,16 @@ public class JwtService {
         return Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(getSecretKeyFromFile()))
                 .parseClaimsJws(jwt).getBody();
+    }
+
+    public static String getSubject(String token) {
+        Claims claims = null;
+        try {
+            claims = decodeJWT(token);
+        } catch (MalformedJwtException | SignatureException e) {
+            LOG.error("Could not decode jwt");
+        }
+        return claims!=null ? claims.getSubject() : null;
     }
 
     private static boolean isValidJwt(String jwt) {

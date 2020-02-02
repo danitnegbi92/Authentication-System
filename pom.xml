@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.myCheck</groupId>
-    <artifactId>demo</artifactId>
+    <artifactId>authentication-system</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Authentication System</name>
     <description>Authentication System</description>

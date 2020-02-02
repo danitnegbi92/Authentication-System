@@ -1,8 +1,10 @@
 package com.mycheck.controller;
 
 import com.mycheck.constants.ErrorsConstants;
-import com.mycheck.dto.model.UserRegistration;
+import com.mycheck.dto.model.UserDataDto;
+import com.mycheck.dto.model.UserRegistrationDto;
 import com.mycheck.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -26,18 +28,20 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid UserRegistration userRegistration){
+    @ApiOperation(value = "Register a new user in the system")
+    public ResponseEntity<String> register(@RequestBody @Valid UserRegistrationDto userRegistrationDto){
         LOG.info("POST request to register new user");
-        if(userService.registerUser(userRegistration)){
+        if(userService.registerUser(userRegistrationDto)){
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(ErrorsConstants.EMAIL_ALREADY_EXISTS.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid UserRegistration userRegistration){
+    @ApiOperation(value = "User login to system and getting Authorization token response header for successful login")
+    public ResponseEntity<String> login(@RequestBody @Valid UserRegistrationDto userRegistrationDto){
         LOG.info("POST request to user login");
-        String token = userService.login(userRegistration);
+        String token = userService.login(userRegistrationDto);
         if(StringUtils.isEmpty(token))
             return new ResponseEntity<>(LOGIN_FAILED.getMessage(), HttpStatus.UNAUTHORIZED);
 
@@ -48,14 +52,15 @@ public class UserController {
     }
 
     @GetMapping("/data")
-    public ResponseEntity<String> login(HttpServletRequest request){
+    @ApiOperation(value = "Receive user Authorization token in header and get corresponding user's data")
+    public ResponseEntity<?> login(HttpServletRequest request){
         LOG.info("GET request to get email by Authorization request header");
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
-        String email = userService.getEmail(token);
-        if(StringUtils.isEmpty(email))
+        UserDataDto userDataDto = userService.getEmail(token);
+        if(StringUtils.isEmpty(userDataDto))
             return new ResponseEntity<>(AUTHENTICATION_FAILED.getMessage(), HttpStatus.UNAUTHORIZED);
 
-        return new ResponseEntity<>(email, HttpStatus.OK);
+        return new ResponseEntity<>(userDataDto, HttpStatus.OK);
     }
 }
 

@@ -1,9 +1,9 @@
 package com.mycheck.service;
 
-import com.mycheck.dto.model.UserRegistration;
+import com.mycheck.dto.model.UserDataDto;
+import com.mycheck.dto.model.UserRegistrationDto;
 import com.mycheck.model.User;
 import com.mycheck.repository.UserRepository;
-import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,11 +25,11 @@ public class UserService {
     @Resource
     private UserRepository userRepository;
 
-    public boolean registerUser(UserRegistration userRegistration) {
+    public boolean registerUser(UserRegistrationDto userRegistrationDto) {
         User user = new User();
-        String hashedPassword = getHashValue(userRegistration.getPassword());
-        user.setEmail(userRegistration.getEmail()).setPassword(hashedPassword);
-        if (userRepository.existsById(userRegistration.getEmail())) {
+        String hashedPassword = getHashValue(userRegistrationDto.getPassword());
+        user.setEmail(userRegistrationDto.getEmail()).setPassword(hashedPassword);
+        if (userRepository.existsById(userRegistrationDto.getEmail())) {
             LOG.error(EMAIL_ALREADY_EXISTS.getMessage());
             return false;
         }
@@ -41,9 +41,9 @@ public class UserService {
         return compareHashValue(realPassword, dbPassword);
     }
 
-    public String login(UserRegistration userRegistration) {
+    public String login(UserRegistrationDto userRegistrationDto) {
         String token = null;
-        String email = userRegistration.getEmail();
+        String email = userRegistrationDto.getEmail();
         Optional<User> user = userRepository.findById(email);
 
         if(!user.isPresent()){
@@ -51,22 +51,22 @@ public class UserService {
             return null;
         }
 
-        if (isPasswordMatchUser(userRegistration.getPassword(), user.get().getPassword())) {
+        if (isPasswordMatchUser(userRegistrationDto.getPassword(), user.get().getPassword())) {
             LOG.info("Password match to user");
-            token = JwtService.createJWT(email, 10);
+            token = JwtService.createJWT(email, 5);
             token = StringUtils.isEmpty(token)? null :  SecurityConstants.AUTHORIZATION_TOKEN.getValue() + token;
         }
 
         return token;
     }
 
-    public String getEmail(String token) {
-        Claims claims = null;
-        try {
-            claims = JwtService.decodeJWT(token);
-        } catch (MalformedJwtException | SignatureException e) {
-            LOG.error(AUTHENTICATION_FAILED.getMessage() + " - could not decode jwt");
-        }
-        return claims!=null ? claims.getSubject() : null;
+    public UserDataDto getEmail(String token) {
+        String email = JwtService.getSubject(token);
+        if(StringUtils.isEmpty(email))
+            return null;
+
+        UserDataDto userDataDto = new UserDataDto();
+        userDataDto.setEmail(email);
+        return userDataDto;
     }
 }

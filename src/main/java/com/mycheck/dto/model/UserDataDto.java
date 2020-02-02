@@ -1,18 +1,17 @@
 package com.mycheck.dto.model;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-
 
 @Accessors(chain = true)
 @Getter
-public class UserRegistration {
+@Setter
+
+//This class expose all the data the user should see
+public class UserDataDto {
     @Email
     private String email;
-
-    @NotBlank
-    private String password;
 }
