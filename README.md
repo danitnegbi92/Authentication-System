@@ -55,7 +55,7 @@ The service introduces REST calls for simple authentication (register/ login).
 
 * The Authorization token is sent in the header request / response.
 * I stored the real email address without hashing, because I read that storing the email address has the advantage of contact users.
-* I put the secret key file (secretKey.txt) in the project for easy access.
+* I put the secret key file (secretKey.txt) in the project for easy access (in real system I would not add it to GIT).
 * I used jbcrypt 3rd party library to hash the password (with salt).
 * I used jjwt 3rd party library to generate and decode Authorization token.
 * I enclosed MySQL file (db_users_user.sql) in: src/main/resources/db_users_user.sql
