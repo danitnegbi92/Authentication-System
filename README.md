@@ -37,7 +37,7 @@ The service introduces REST calls for simple authentication (register/ login).
     
 5. This project has Lombok dependency.
    
-   If you want to avoid seeing errors in the project you can add Lombok plugin to your IDE.
+   If you want to avoid seeing errors of Getters and Setters methods in the project, you can add Lombok plugin to your IDE.
    It will still run without the plugin. 
 
 
