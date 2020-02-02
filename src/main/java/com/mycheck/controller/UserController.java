@@ -53,7 +53,7 @@ public class UserController {
 
     @GetMapping("/data")
     @ApiOperation(value = "Receive user Authorization token in header and get corresponding user's data")
-    public ResponseEntity<?> login(HttpServletRequest request){
+    public ResponseEntity<?> getData(HttpServletRequest request){
         LOG.info("GET request to get email by Authorization request header");
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         UserDataDto userDataDto = userService.getEmail(token);
